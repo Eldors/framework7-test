@@ -1,0 +1,19 @@
+{
+  "cwd": "/Users/pavel/Work/framework7-test",
+  "type": [
+    "pwa"
+  ],
+  "name": "My App",
+  "framework": "vue",
+  "template": "single-view",
+  "bundler": "vite",
+  "cssPreProcessor": "scss",
+  "theming": {
+    "customColor": false,
+    "color": "#007aff",
+    "darkTheme": false,
+    "iconFonts": true,
+    "fillBars": false
+  },
+  "customBuild": false
+}
