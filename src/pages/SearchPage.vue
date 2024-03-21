@@ -3,7 +3,9 @@
     name="SearchPage"
     @page:init="handlePageInit"
     @page:reinit="handlePageInit"
+    @page:beforeout="() => {console.log('page:beforeout'); isPageInit = false}"
 >
+    {{queryParams}}
     <f7-block>
         <f7-button outline popover-open=".filter-popover" >
            Filter
@@ -36,6 +38,7 @@ import { reactive, ref, watch } from "vue";
 import { f7 } from "framework7-vue";
 
 const selectedOption = ref([]);
+const isPageInit = ref(false);
 
 const queryParams = reactive({
     name: null,
@@ -61,8 +64,18 @@ const options = ref([
     }
 ])
 
+const updateUrl = () => {
+    const newUrl = f7.view.main.router.generateUrl({
+        name: 'search',
+        query: queryParams
+    })
+    console.log('watch', newUrl)
+    f7.views.main.router.updateCurrentUrl(newUrl);
+}
+
 const handleOptionClick = (id) => {
     queryParams.foo = queryParams.foo + id.toString()
+    // updateUrl();
 }
 
 const handleClearClick = () => {
@@ -70,18 +83,25 @@ const handleClearClick = () => {
 }
 
 const handlePageInit = (e) => {
+    console.log('init', e.route.query.name)
     Object.keys(queryParams).forEach(key => {
         queryParams[key] = e.route.query[key]
     })
+
+    isPageInit.value = window.location.hash === `#${e?.route.url}`;
 }
 
 watch([queryParams], () => {
+    if (!isPageInit.value) return;
+
     const newUrl = f7.view.main.router.generateUrl({
         name: 'search',
         query: queryParams
     })
-
+    console.log('watch', newUrl)
     f7.views.main.router.updateCurrentUrl(newUrl);
+},{
+    flush: 'post'
 })
 </script>
 
